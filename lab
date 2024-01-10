@@ -1,0 +1,628 @@
+FINDS
+
+import csv
+r=[]
+with open('/content/ENJOYSPORT.csv','r') as cf:
+  next(cf)
+  for row in csv.reader(cf):
+    r.append(row)
+  print(r)
+  print("\nThe total number of training examples are:",len(r))
+num_attribute=len(r[0])-1
+print("\n The initial hypothesis is:")
+hypothesis=['0']*num_attribute
+print(hypothesis)
+for j in range(0,len(r)):
+  if r[j][num_attribute]=='yes':
+    print("\nInstance ",j+1,"is",r[j],"and positive instance")
+    for i in range(0,num_attribute):
+      if hypothesis[i]=='0' or hypothesis[i]==r[j][i]:
+        hypothesis[i]=r[j][i]
+      else:
+          hypothesis[i]='?'
+  if r[j][num_attribute]=='no':
+    print("\nInstance ",j+1," is :",hypothesis,"\n")
+    print("The hypothesis for the training instance", i+1, " is: " , hypothesis, "\n")
+  print(hypothesis)
+print("\nThe Maximally specific for the training instance is",hypothesis)
+
+
+OUTPUT:
+
+[['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same', 'yes'], ['Sunny', 'Warm', 'High', 'Strong', 'Warm', 'Same', 'yes'], ['Rainy', 'Cold', 'High', 'Strong', 'Warm', 'Change', 'no'], ['Sunny', 'Warm', 'High', 'Strong', 'Cool', 'Change', 'yes']]
+
+The total number of training examples are: 4
+The initial hypothesis is:
+['0', '0', '0', '0', '0', '0']
+
+Instance  1 is ['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same', 'yes'] and positive instance
+['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same']
+
+Instance  2 is ['Sunny', 'Warm', 'High', 'Strong', 'Warm', 'Same', 'yes'] and positive instance
+['Sunny', 'Warm', '?', 'Strong', 'Warm', 'Same']
+
+Instance  3  is : ['Sunny', 'Warm', '?', 'Strong', 'Warm', 'Same'] 
+
+The hypothesis for the training instance 6  is:  ['Sunny', 'Warm', '?', 'Strong', 'Warm', 'Same'] 
+
+['Sunny', 'Warm', '?', 'Strong', 'Warm', 'Same']
+
+Instance  4 is ['Sunny', 'Warm', 'High', 'Strong', 'Cool', 'Change', 'yes'] and positive instance
+['Sunny', 'Warm', '?', 'Strong', '?', '?']
+
+The Maximally specific for the training instance is ['Sunny', 'Warm', '?', 'Strong', '?', '?']
+
+
+
+
+
+CANDIDATE ELIMINATION:
+
+import csv
+
+with open("/content/trainingdata.csv") as f:
+    csv_file=csv.reader(f)
+    data=list(csv_file)
+
+    s=data[1][:-1]
+    g=[['?' for i in range(len(s))] for j in range(len(s))]
+
+    for i in data:
+        if i[-1]=="Yes":
+            for j in range(len(s)):
+                if i[j]!=s[j]:
+                    s[j]='?'
+                    g[j][j]='?'
+
+        elif i[-1]=="No":
+            for j in range(len(s)):
+                if i[j]!=s[j]:
+                    g[j][j]=s[j]
+                else:
+                    g[j][j]="?"
+        print("\nSteps of Candidate Elimination Algorithm",data.index(i)+1)
+        print(s)
+        print(g)
+    gh=[]
+    for i in g:
+        for j in i:
+            if j!='?':
+                gh.append(i)
+                break
+    print("\nFinal specific hypothesis:\n",s)
+
+    print("\nFinal general hypothesis:\n",gh)
+
+OUTPUT:
+
+Steps of Candidate Elimination Algorithm 1
+['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+Steps of Candidate Elimination Algorithm 2
+['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+Steps of Candidate Elimination Algorithm 3
+['Sunny', 'Warm', '?', 'Strong', 'Warm', 'Same']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+Steps of Candidate Elimination Algorithm 4
+['Sunny', 'Warm', '?', 'Strong', 'Warm', 'Same']
+[['Sunny', '?', '?', '?', '?', '?'], ['?', 'Warm', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', 'Same']]
+
+Steps of Candidate Elimination Algorithm 5
+['Sunny', 'Warm', '?', 'Strong', '?', '?']
+[['Sunny', '?', '?', '?', '?', '?'], ['?', 'Warm', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+Final specific hypothesis:
+ ['Sunny', 'Warm', '?', 'Strong', '?', '?']
+
+Final general hypothesis:
+ [['Sunny', '?', '?', '?', '?', '?'], ['?', 'Warm', '?', '?', '?', '?']]
+
+
+NBAYESIAN CLASSIFIER:
+
+import pandas as pd
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+data = pd.read_csv('tennisdata.csv')
+print("The first 5 values of data is :\n",data.head())
+X = data.iloc[:,:-1]
+print("\nThe First 5 values of train data is\n",X.head())
+y = data.iloc[:,-1]
+print("\nThe first 5 values of Train output is\n",y.head())
+le_outlook = LabelEncoder()
+X.Outlook = le_outlook.fit_transform(X.Outlook)
+X.Temperature = le_Temperature.fit_transform(X.Temperature)
+le_Humidity = LabelEncoder()
+X.Humidity = le_Humidity.fit_transform(X.Humidity)
+le_Windy = LabelEncoder()
+X.Windy = le_Windy.fit_transform(X.Windy)
+print("\nNow the Train data is :\n",X.head())
+le_PlayTennis = LabelEncoder()
+y = le_PlayTennis.fit_transform(y)
+print("\nNow the Train output is\n",y)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.20)
+classifier = GaussianNB()
+classifier.fit(X_train,y_train)
+from sklearn.metrics import accuracy_score
+print("Accuracy is:",accuracy_score(classifier.predict(X_test),y_test))
+print("Test Data is :\n",X_test,y_test)
+
+OUTPUT:
+
+The first 5 values of data is :
+     Outlook Temperature Humidity  Windy PlayTennis
+0     Sunny         Hot     High  False         No
+1     Sunny         Hot     High   True         No
+2  Overcast         Hot     High  False        Yes
+3     Rainy        Mild     High  False        Yes
+4     Rainy        Cool   Normal  False        Yes
+The First 5 values of train data is
+     Outlook Temperature Humidity  Windy
+0     Sunny         Hot     High  False
+1     Sunny         Hot     High   True
+2  Overcast         Hot     High  False
+3     Rainy        Mild     High  False
+4     Rainy        Cool   Normal  False
+
+The first 5 values of Train output is
+ 0     No
+1     No
+2    Yes
+3    Yes
+4    Yes
+Name: PlayTennis, dtype: object
+Now the Train data is :
+    Outlook  Temperature  Humidity  Windy
+0        2            1         0      0
+1        2            1         0      1
+2        0            1         0      0
+3        1            2         0      0
+4        1            0         1      0
+Now the Train output is
+ [0 0 1 1 1 0 1 0 1 1 1 1 1 0]
+Accuracy is: 1.0
+Test Data is :
+    Outlook  Temperature  Humidity  Windy
+1        2            1         0      1
+3        1            2         0      0
+7        2            2         0      0 [0 1 0]
+
+
+NBAYESIAN MODEL:
+
+import pandas as pd
+from sklearn import metrics
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+df=pd.read_csv("text_classification_4.csv",names=["message","label"])
+df
+df["label_num"]=df.label.map({"pos":1,"neg":0})
+df
+x=df.message
+y=df.label_num
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.4)
+
+cv=CountVectorizer()
+xtrain=cv.fit_transform(x_train)
+xtest=cv.transform(x_test)
+mnb=MultinomialNB()
+mnb.fit(xtrain,y_train)
+y_pred=mnb.predict(xtest)
+print("Accuracy : ",metrics.accuracy_score(y_pred,y_test))
+print("Precision : ",metrics.precision_score(y_pred,y_test))
+print("Recall : ",metrics.recall_score(y_pred,y_test))
+
+OUTPUT:
+
+Accuracy :  0.5
+Precision :  0.5
+Recall :  0.5
+
+
+BAYESIAN NETWORK:
+
+pip install pgmpy
+import pandas as pd
+import numpy as np
+import csv
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.models import BayesianModel
+from pgmpy.inference import VariableElimination
+df=pd.read_csv("heart.csv")
+df=df.replace('?',np.nan)
+model=BayesianModel([('age','target'),('sex','target'),('cp','target'),('fbs','target'),('exang','target'),('target','restecg'),('target','chol')])
+model.fit(df,estimator=MaximumLikelihoodEstimator)
+inference=VariableElimination(model)
+q1=inference.query(variables=['target'],evidence={'restecg':1})
+print(q1)
+q2=inference.query(variables=['target'],evidence={'cp':2})
+print(q2)
+
+OUTPUT:
+
++-----------+---------------+
+| target    |   phi(target) |
++===========+===============+
+| target(0) |        0.4278 |
++-----------+---------------+
+| target(1) |        0.5722 |
++-----------+---------------+
++-----------+---------------+
+| target    |   phi(target) |
++===========+===============+
+| target(0) |        0.4102 |
++-----------+---------------+
+| target(1) |        0.5898 |
++-----------+---------------+
+
+
+DECISION TREE:
+
+import pandas as pd
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
+from io import StringIO
+data = pd.read_csv('tennisdata.csv')
+print("The first 5 values of data is \n",data.head())
+X = data.iloc[:,:-1]
+print("\nThe first 5 values of Train data is \n",X.head())
+y = data.iloc[:,-1]
+print("\nThe first 5 values of Train output is \n",y.head())
+le_outlook = LabelEncoder()
+X.Outlook =  le_outlook.fit_transform(X.Outlook)
+le_Temperature = LabelEncoder()
+X.Temperature =  le_Temperature.fit_transform(X.Temperature)
+le_Humidity = LabelEncoder()
+X.Humidity =  le_Humidity.fit_transform(X.Humidity)
+le_Windy = LabelEncoder()
+X.Windy =  le_Windy.fit_transform(X.Windy)
+print("\nNow the Train data is",X.head())
+
+le_PlayTennis = LabelEncoder()
+y =  le_PlayTennis.fit_transform(y)
+print("\nNow the Train data is\n",y)
+
+classifier = DecisionTreeClassifier()
+classifier.fit(X,y)
+
+def labelEncoderForInput(list1):
+    list1[0] =  le_outlook.transform([list1[0]])[0]
+    list1[1] =  le_Temperature.transform([list1[1]])[0]
+    list1[2] =  le_Humidity.transform([list1[2]])[0]
+    list1[3] =  le_Windy.transform([list1[3]])[0]
+    return [list1]
+
+inp = ["Rainy","Mild","High","False"]
+inp1=["Rainy","Cool","High","False"]
+pred1 = labelEncoderForInput(inp1)
+y_pred = classifier.predict(pred1)
+y_pred
+print("\nfor input {0}, we obtain {1}".format(inp1, le_PlayTennis.inverse_transform(y_pred)))
+
+
+OUTPUT :
+
+The first 5 values of data is 
+     Outlook Temperature Humidity  Windy PlayTennis
+0     Sunny         Hot     High  False         No
+1     Sunny         Hot     High   True         No
+2  Overcast         Hot     High  False        Yes
+3     Rainy        Mild     High  False        Yes
+4     Rainy        Cool   Normal  False        Yes
+The first 5 values of Train data is 
+     Outlook Temperature Humidity  Windy
+0     Sunny         Hot     High  False
+1     Sunny         Hot     High   True
+2  Overcast         Hot     High  False
+3     Rainy        Mild     High  False
+4     Rainy        Cool   Normal  False
+
+The first 5 values of Train output is 
+ 0     No
+1     No
+2    Yes
+3    Yes
+4    Yes
+Name: PlayTennis, dtype: object
+Now the Train data is    Outlook  Temperature  Humidity  Windy
+0        2            1         0      0
+1        2            1         0      1
+2        0            1         0      0
+3        1            2         0      0
+4        1            0         1      0
+
+Now the Train data is
+ [0 0 1 1 1 0 1 0 1 1 1 1 1 0]
+
+for input [1, 0, 0, 1], we obtain ['No']
+
+
+ANN BPA:
+
+import numpy as np
+x=np.array(([2,9],[1,5],[3,6]),dtype=float)
+y=np.array(([86],[92],[89]),dtype=float)
+x=x/np.amax(x,axis=0)
+y=y/100
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+def derivative_sigmoid(x):
+    return x*(1-x)
+
+epoch=5
+lr=0.1
+
+iln=2
+hln=1
+oln=1
+
+wh=np.random.uniform(size=(iln,hln))
+bh=np.random.uniform(size=(1,hln))
+wout=np.random.uniform(size=(hln,oln))
+bout=np.random.uniform(size=(1,oln))
+
+for i in range(epoch):
+    hinp1=np.dot(x,wh)
+    hinp=hinp1+bh
+    hlayer_act=sigmoid(hinp)
+
+    oinp1=np.dot(hlayer_act,wout)
+    oinp=oinp1+bout
+    output=sigmoid(oinp)
+
+    eo=y-output
+    outgrad=derivative_sigmoid(output)
+    d_output=eo*outgrad
+
+    eh=np.dot(d_output,wout.T)
+    hiddgrad=derivative_sigmoid(hlayer_act)
+    d_hidd=eh*hiddgrad
+
+    wout=wout+np.dot(hlayer_act.T,d_output)*lr
+    wh=wh+np.dot(x.T,d_hidd)*lr
+
+    print("Epoch : ",i+1)
+    print("Input : ",x)
+    print("Actual output : ",y)
+    print("Predicted output : ",output)
+
+print("Epoch : ",i+1)
+print("Input : ",x)
+print("Actual output : ",y)
+print("Predicted output : ",output)
+
+
+OUTPUT:
+
+Epoch :  1
+Input :  [[0.66666667 1.        ]
+ [0.33333333 0.55555556]
+ [1.         0.66666667]]
+Actual output :  [[0.86]
+ [0.92]
+ [0.89]]
+Predicted output :  [[0.76244913]
+ [0.75002042]
+ [0.75956888]]
+Epoch :  2
+Input :  [[0.66666667 1.        ]
+ [0.33333333 0.55555556]
+ [1.         0.66666667]]
+Actual output :  [[0.86]
+ [0.92]
+ [0.89]]
+Predicted output :  [[0.76318717]
+ [0.75069357]
+ [0.76029748]]
+Epoch :  3
+Input :  [[0.66666667 1.        ]
+ [0.33333333 0.55555556]
+ [1.         0.66666667]]
+Actual output :  [[0.86]
+ [0.92]
+ [0.89]]
+Predicted output :  [[0.76391917]
+ [0.75136125]
+ [0.76102019]]
+Epoch :  4
+Input :  [[0.66666667 1.        ]
+ [0.33333333 0.55555556]
+ [1.         0.66666667]]
+Actual output :  [[0.86]
+ [0.92]
+ [0.89]]
+Predicted output :  [[0.76464519]
+ [0.75202353]
+ [0.76173707]]
+Epoch :  5
+Input :  [[0.66666667 1.        ]
+ [0.33333333 0.55555556]
+ [1.         0.66666667]]
+Actual output :  [[0.86]
+ [0.92]
+ [0.89]]
+Predicted output :  [[0.76536529]
+ [0.75268046]
+ [0.7624482 ]]
+Epoch :  5
+Input :  [[0.66666667 1.        ]
+ [0.33333333 0.55555556]
+ [1.         0.66666667]]
+Actual output :  [[0.86]
+ [0.92]
+ [0.89]]
+Predicted output :  [[0.76536529]
+ [0.75268046]
+ [0.7624482 ]]
+
+
+KNN :
+
+from sklearn.datasets import load_iris
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+import numpy as np
+
+dataset=load_iris()
+X_train,X_test,y_train,y_test=train_test_split(dataset["data"],dataset["target"],random_state=0)
+
+kn=KNeighborsClassifier(n_neighbors=1)
+kn.fit(X_train,y_train)
+
+for i in range(len(X_test)):
+    x=X_test[i]
+    x_new=np.array([x])
+    prediction=kn.predict(x_new)
+    print("TARGET=",y_test[i],dataset["target_names"] [y_test[i]],"PREDICTED=",prediction,dataset["target_names"][prediction])
+
+print(kn.score(X_test,y_test))
+
+OUTPUT :
+
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [2] ['virginica']
+0.9736842105263158
+
+
+LOCALLY WEIGHTED REGRESSION:
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def kernal(point,xmat,k):
+    m,n=np.shape(xmat)
+    weights=np.mat(np.eye(m))
+
+    for i in range(m):
+        diff=point-xmat[i]
+        weights[i,i]=np.exp(diff*diff.T/(-2*k**2))
+    return weights
+
+def local_weights(point,xmat,ymat,k):
+    wt=kernal(point,xmat,k)
+    W=(x.T*(wt*x)).I*(x.T*wt*ymat.T)
+    return W
+
+def local_regression(xmat,ymat,k):
+    m,n=np.shape(xmat)
+    ypred=np.ones(m)
+    for i in range(m):
+        ypred[i]=xmat[i]*local_weights(xmat[i],xmat,ymat,k)
+    return ypred
+
+df=pd.read_csv("10-dataset.csv")
+df
+cola=np.array(df.total_bill)
+colb=np.array(df.tip)
+mcola=np.mat(cola)
+mcolb=np.mat(colb)
+
+m=np.shape(mcolb)[1]
+one=np.ones((1,m),dtype=int)
+
+x=np.hstack((one.T,mcola.T))
+ypred=local_regression(x,mcolb,0.8)
+
+xsort=x.copy()
+xsort.sort(axis=0)
+plt.scatter(cola,colb,color='blue')
+plt.plot(xsort[:,1],ypred[x[:,1].argsort(0)],color='green',linewidth=5)
+plt.show()
+
+
+OUTPUT:
+GRAPH- SCATTERED+LINE
+
+
+EM ALGORITHM:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
+from sklearn import datasets
+from sklearn.cluster import KMeans
+from sklearn.mixture import GaussianMixture
+import numpy as np
+iris=datasets.load_iris()
+x=pd.DataFrame(iris.data)
+x.columns=["sepal_length","sepal_width","petal_length","petal_width"]
+y=pd.DataFrame(iris.target)
+y.columns=["target"]
+
+km=KMeans(n_clusters=3)
+km.fit(x,y)
+
+plt.figure(figsize=(14,14))
+colormap=np.array(["red","green","blue"])
+plt.subplot(2,3,1)
+plt.scatter(x.petal_length,x.petal_width,c=colormap[y.target],s=40)
+plt.title("Real plot")
+
+plt.subplot(2,3,2)
+plt.scatter(x.petal_length,x.petal_width,c=colormap[km.labels_],s=40)
+plt.title("KM plot")
+
+scaler=preprocessing.StandardScaler()
+scaler.fit(x)
+xsa=scaler.transform(x)
+xs=pd.DataFrame(xsa,columns=[x.columns])
+
+gm=GaussianMixture(n_components=3)
+gm.fit(xs)
+gmm_y=gm.predict(xs)
+
+plt.subplot(2,3,3)
+plt.scatter(x.petal_length,x.petal_width,c=colormap[gmm_y],s=40)
+plt.title("GM plot")
+plt.show()
+
+
+OUTPUT:
+GRAPH -Real plot , KM plot , GM plot
